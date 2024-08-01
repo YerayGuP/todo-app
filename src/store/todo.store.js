@@ -18,6 +18,7 @@ const state = {
 }
 
 const initStore = () => {
+    console.log(state)
     console.log('InitStore')
 }
 

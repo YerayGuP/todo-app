@@ -99,3 +99,27 @@
 
         import todoStore from './src/store/todo.store'
         todoStore.initStore();
+
+## instalamos la dependecia UUID para crear id unicos para cada tarea.
+
+1. En nuestra terminal instalamos esta dependecia desde ```npm i uuid```. Si se instala, lo veremos en nuestro package.json.
+
+2. Importamos la dependencia en ```todo.model.js```:
+
+    todo.model.js:
+    
+        //importacion de la dependencia
+        import {v4 as uuid } from 'uuid';
+
+        export class Todo {
+            description;
+
+            constructor(description) {
+                //actualizamos el id con la función uuid() que nos devuelve un id único
+                this.id = uuid();
+                this.description = description;
+                this.done = false;
+                this.createdAt = new Date();
+
+            }
+        }
