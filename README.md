@@ -10,7 +10,7 @@
 3. En el directorio ```todos/``` creamos dos archivos:
 
     a. ```app.html``` en el que crearemos el html.
-    
+
     b. ```app.js``` en el que crearemos una funcion autoejecutable que renderize el contenido de ```app.html```:
 
     app.js:
@@ -35,7 +35,7 @@
         App('#app') 
 
 ## Creamos la clase Todo
-1. Dentro del directorio ````todos``` creamos el directorio ```models``` y en su interior un archivo llamado ```todo.model.js```.
+1. Dentro del directorio ```todos``` creamos el directorio ```models``` y en su interior un archivo llamado ```todo.model.js```.
 2. En este archivo creamos una clase llamada Todo, con una propiedad ```description``` y un constructor que la recoja como parametro.
 3. En el interior del constructor definimos un id, un estado (done) y una fecha (createdAt).
 
