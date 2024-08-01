@@ -31,3 +31,66 @@
     
         import { App } from './src/todos/app'
         App('#app') 
+
+## Creamos la clase Todo
+1. Dentro del directorio ````todos``` creamos el directorio ```models``` y en su interior un archivo llamado ```todo.model.js```.
+2. En este archivo creamos una clase llamada Todo, con una propiedad ```description``` y un constructor que la recoja como parametro.
+3. En el interior del constructor definimos un id, un estado (done) y una fecha (createdAt).
+
+    export class Todo {
+        description;
+        constructor(description) {
+            this.description = description;
+            this.id = 1;
+            this.done = false;
+            this.createdAt = new Date();
+        }
+    }
+
+## Creamos el store
+1. Dentro del directorio ```store``` creamos el archivo ```todo.store.js```, el cual llevara la logica del store.
+2. Importamos la clase Todo a ```todo.store.js```:
+
+    import { Todo } from '../todos/models/todo.model';
+
+3. Definimos un objeto Filter con tres propiedades: all, completed y pending.
+
+    const Filter = {
+        all: 'all',
+        completed: 'completed',
+        pending: 'pending',
+    }
+
+4. Definimos el estado inicial de la aplicación. Esto nos sirve para tener datos de prueba y poder ver cómo se comporta la aplicación. Basicamente es un objeto con dos propiedades todos: 
+    a. Un array con cinco instancias de la clase Todo. 
+    b. filter: la propiedad filter con el valor Filter.all que llama al objeto Filter que definimos anteriormente.
+
+    const state = {
+        todos: [
+            new Todo('Piedra del alma'),
+            new Todo('Piedra del tiempo'),
+            new Todo('Piedra del espacio'),
+            new Todo('Piedra de la mente'),
+            new Todo('Piedra del poder'),
+        ],
+        filter: Filter.all,
+    }
+
+5. Definimos una función initStore que por ahora solo imprime un mensaje en la consola. Pero más adelante, esta función nos permitirá inicializar el store de Vuex.
+
+    const initStore = () => {
+        console.log('InitStore')
+    }
+
+6. Exportamos un objeto con la propiedad initStore que apunta a la función initStore que definimos anteriormente. De esta manera, cuando importemos el store en el archivo main.js, podremos llamar a la función initStore.
+
+    export default {
+        initStore,
+    }
+
+7. Finalmente, vamos a main.js, importamos el store y llamamos a la función initStore.
+
+    main.js: 
+    
+    import todoStore from './src/store/todo.store'
+    todoStore.initStore();
