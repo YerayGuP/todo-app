@@ -428,7 +428,7 @@ const toggleTodo = (id) => {
     }
     ```
 
-### Una vez creados, haremos la referenciación dentro de la función autoinvocada:
+### Una vez creados, haremos la referenciación debajo de la función autoinvocada:
 1. Creamos el puntero:
 
     ```javascript
@@ -499,4 +499,47 @@ export const App = (elementId) => {
         event.target.value = '';
     });
 }
+```
+## Añadimos la funcionalidad de completado y eliminación
+
+* Primero referenciamos la lista HTML que tenemos en el objeto `ElementId`:
+
+```javascript
+const ElementId = {
+    TodoList: '.todo-list',
+    TodoInput: '#new-todo-input',
+}
+
+// Referencia al <ul>
+const todoListUL = document.querySelector(ElementId.TodoList);
+```
+
+### 1. Listener de completado:
+* Buscamos el elemento más cercano que tenga el atributo `data-id`.
+* Cambiamos el estado del todo.
+* Volvemos a renderizar la lista.
+
+```javascript
+todoListUL.addEventListener('click', (event) => {
+    const element = event.target.closest('[data-id]');
+    todoStore.toggleTodo(element.getAttribute('data-id'));
+    displayTodos(); 
+});
+```
+
+### 2. Listener de eliminación:
+* Verificamos si el elemento clickeado es el botón de eliminar.
+* Buscamos el elemento más cercano que tenga el atributo `data-id`.
+* Si no encontramos el elemento o no es el botón de eliminar, no hacemos nada.
+* Eliminamos el todo.
+* Volvemos a renderizar la lista.
+
+```javascript
+todoListUL.addEventListener('click', (event) => {
+    const isDestroyElement = event.target.className === 'destroy';
+    const element = event.target.closest('[data-id]'); 
+    if (!element || !isDestroyElement) return;
+    todoStore.deleteTodo(element.getAttribute('data-id'));        
+    displayTodos();
+});
 ```

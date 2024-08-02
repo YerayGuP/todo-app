@@ -31,6 +31,10 @@ export const App = (elementId) => {
 
     // Referenciamos el input del formulario
     const newInputDescription = document.querySelector(ElementId.TodoInput);
+    const todoListUL = document.querySelector(ElementId.TodoList);
+
+
+    // Listeners
     newInputDescription.addEventListener('keyup', (event) => {
         if ( event.keyCode !== 13 ) return; // Si la tecla presionada no es enter, no hacemos nada
         if ( event.target.value.trim() === '' ) return; // Si el valor del input esta vacio, no hacemos nada
@@ -39,6 +43,20 @@ export const App = (elementId) => {
         displayTodos();
         event.target.value = '';
 
+    });
+
+    todoListUL.addEventListener('click', (event) => {
+        const element = event.target.closest('[data-id]'); // Buscamos el elemento mas cercano que tenga el atributo data-id
+        todoStore.toggleTodo(element.getAttribute('data-id')); // Cambiamos el estado del todo
+        displayTodos(); // Volvemos a renderizar la lista
+    });
+
+    todoListUL.addEventListener('click', (event) => {
+        const isDestroyElement = event.target.className === 'destroy'; // Verificamos si el elemento clickeado es el boton de eliminar
+        const element = event.target.closest('[data-id]'); // Buscamos el elemento mas cercano que tenga el atributo data-id
+        if ( !element || !isDestroyElement ) return; // Si no encontramos el elemento o no es el boton de eliminar, no hacemos nada
+        todoStore.deleteTodo(element.getAttribute('data-id')); // Eliminamos el todo
+        displayTodos(); // Volvemos a renderizar la lista
     });
 }
 
