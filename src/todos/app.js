@@ -1,10 +1,11 @@
 import html from './app.html?raw';
 import todoStore from '../store/todo.store';
 import { renderTodos } from './use-cases';
+import { Todo } from './models/todo.model';
 
 const ElementId = {
     TodoList: '.todo-list',
-
+    TodoInput: '#new-todo-input',
 }
 /**
  * Esta funcion se encarga de renderizar la aplicacion en el elemento con el id que se le pase
@@ -28,6 +29,17 @@ export const App = (elementId) => {
         displayTodos();
     })();
 
+    // Referenciamos el input del formulario
+    const newInputDescription = document.querySelector(ElementId.TodoInput);
+    newInputDescription.addEventListener('keyup', (event) => {
+        if ( event.keyCode !== 13 ) return; // Si la tecla presionada no es enter, no hacemos nada
+        if ( event.target.value.trim() === '' ) return; // Si el valor del input esta vacio, no hacemos nada
+
+        todoStore.addTodo(event.target.value);
+        displayTodos();
+        event.target.value = '';
+
+    });
 }
 
 //podemos importar mediante js un documento html y renderizarlo en el DOM con la funcion App

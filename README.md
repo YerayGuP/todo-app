@@ -1,4 +1,4 @@
-## generar html dinamicamente:
+# HACIENDO EL TODOLIST:
 
 1. En nuestro documento html debemos vicular ```main.js``` e ```index.html```.
     index.html:
@@ -394,23 +394,109 @@ const toggleTodo = (id) => {
 * Entre los cambios que realizamos, tenemos que creamos la variable `element` externa a la función, pero la instanciamos dentro con una validación que nos permite generar el elemento siempre que no exista de antes y lanzar un error si no existe. Luego, limpiamos el contenido con un texto vacío e iteramos como hicimos anteriormente.
 
     ```javascript
-    let element; // Variable que almacenará el elemento del DOM
-
-    export const renderTodos = (elementId, todos = []) => {
-        // Si no se ha pasado un elemento por parámetro, intentamos obtenerlo del DOM
-        if (!element) element = document.getElementById(elementId);
-
+    let element; // Variable que almacenara el elemento del DOM
+    /**
+    * 
+    * @param {HTMLElement} elementId 
+    * @param {Todo} todos 
+    */
+    export const renderTodos = ( elementId, todos = [] ) => {
+        // Si no se ha pasado un elemento por parametro, intentamos obtenerlo del DOM
+        if ( !element ) element = document.querySelector( elementId );
+        
         // Si no se encuentra el elemento, lanzamos un error
-        if (!element) throw new Error(`Element with id ${elementId} not found`);
+        if ( !element ) throw new Error(`Element with id ${ elementId } not found`);
 
         // Limpiamos el contenido del elemento
         element.innerHTML = '';
 
         // Iteramos sobre los todos y los agregamos al elemento del DOM
-        todos.forEach(todo => {
+        todos.forEach( todo => {
             element.append(createTodoHTML(todo));
-        });
+        })
     }
     ```
 
+## Añadiendo el elemento al DOM
 
+* Dentro de `app.js`, en nuestro objeto `ElementId`, añadiremos el ID del input:
+
+    ```javascript
+    const ElementId = {
+        TodoList: '.todo-list',
+        TodoInput: '#new-todo-input',
+    }
+    ```
+
+### Una vez creados, haremos la referenciación dentro de la función autoinvocada:
+1. Creamos el puntero:
+
+    ```javascript
+    const newInputDescription = document.querySelector(ElementId.TodoInput);
+    ```
+
+2. Creamos el evento:
+
+    ```javascript
+    newInputDescription.addEventListener('keyup', (event) => {});
+    ```
+
+3. Dentro de este evento queremos que se envíe el valor del input cuando pulsemos Enter y que nunca se envíe si está vacío. El código de Enter es 13, por lo tanto, la validación en el evento sería la siguiente:
+
+    ```javascript
+    if (event.keyCode !== 13) return; // Si la tecla presionada no es Enter, no hacemos nada
+    if (event.target.value.trim() === '') return; // Si el valor del input está vacío, no hacemos nada
+    ```
+
+4. Para añadir el todo al array como nueva instancia, llamamos al método `addTodo` con el valor del evento y lo mostramos con la función `displayTodos`:
+
+    ```javascript
+    todoStore.addTodo(event.target.value);
+    displayTodos();
+    ```
+
+5. Una vez hecho, reseteamos el valor a un string vacío:
+
+    ```javascript
+    event.target.value = '';
+    ```
+
+### Resultado:
+
+```javascript
+import html from './app.html?raw';
+import todoStore from '../store/todo.store';
+import { renderTodos } from './use-cases';
+import { Todo } from './models/todo.model';
+
+const ElementId = {
+    TodoList: '.todo-list',
+    TodoInput: '#new-todo-input',
+}
+
+export const App = (elementId) => {
+
+    const displayTodos = () => {
+        const todos = todoStore.getTodos(todoStore.getCurrentFilter());
+        renderTodos(ElementId.TodoList, todos);
+    }
+
+    (() => {
+        const app = document.createElement('div');
+        app.innerHTML = html;
+        document.querySelector(elementId).appendChild(app);
+        displayTodos();
+    })();
+
+    // Referenciamos el input del formulario
+    const newInputDescription = document.querySelector(ElementId.TodoInput);
+    newInputDescription.addEventListener('keyup', (event) => {
+        if (event.keyCode !== 13) return; 
+        if (event.target.value.trim() === '') return;
+
+        todoStore.addTodo(event.target.value);
+        displayTodos();
+        event.target.value = '';
+    });
+}
+```

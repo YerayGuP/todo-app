@@ -10,10 +10,10 @@ let element; // Variable que almacenara el elemento del DOM
  */
 export const renderTodos = ( elementId, todos = [] ) => {
     // Si no se ha pasado un elemento por parametro, intentamos obtenerlo del DOM
-    if ( !element ) element = document.getElementById(elementId);
+    if ( !element ) element = document.querySelector( elementId );
     
     // Si no se encuentra el elemento, lanzamos un error
-    if ( !element ) throw new Error(`Element with id ${elementId} not found`);
+    if ( !element ) throw new Error(`Element with id ${ elementId } not found`);
 
     // Limpiamos el contenido del elemento
     element.innerHTML = '';
