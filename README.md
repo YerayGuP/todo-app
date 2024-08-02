@@ -364,4 +364,53 @@ const toggleTodo = (id) => {
     export { createTodoHTML } from './create-todo-html';
     ```
 
----
+## Mejorando la función `createTodoHTML`
+
+* Cambiaremos el valor de la constante HTML anterior y crearemos un HTML más completo. El valor de la descripción de cada instancia irá en el `label`, mientras que el `checked` llevará una condicional que valida el `done` de cada instancia. Cada `li` poseerá el atributo `data-id` que tendrá el valor `id` de la instancia, así como la clase `completed` si corresponde.
+
+    ```javascript
+    export const createTodoHTML = (todo) => {
+        if (!todo) throw new Error('A TODO is required');
+        const html = `
+            <div class="view">
+                <input class="toggle" type="checkbox" ${ todo.done ? 'checked' : ''}>
+                <label>${todo.description}</label>
+                <button class="destroy"></button>
+            </div>
+            <input class="edit" value="Create a TodoMVC template">
+        `;
+
+        const liElement = document.createElement('li');
+        liElement.innerHTML = html;
+        liElement.setAttribute('data-id', todo.id);
+        if (todo.done) liElement.classList.add('completed');
+
+        return liElement;
+    }
+    ```
+
+## Validaciones en `renderTodos`
+
+* Entre los cambios que realizamos, tenemos que creamos la variable `element` externa a la función, pero la instanciamos dentro con una validación que nos permite generar el elemento siempre que no exista de antes y lanzar un error si no existe. Luego, limpiamos el contenido con un texto vacío e iteramos como hicimos anteriormente.
+
+    ```javascript
+    let element; // Variable que almacenará el elemento del DOM
+
+    export const renderTodos = (elementId, todos = []) => {
+        // Si no se ha pasado un elemento por parámetro, intentamos obtenerlo del DOM
+        if (!element) element = document.getElementById(elementId);
+
+        // Si no se encuentra el elemento, lanzamos un error
+        if (!element) throw new Error(`Element with id ${elementId} not found`);
+
+        // Limpiamos el contenido del elemento
+        element.innerHTML = '';
+
+        // Iteramos sobre los todos y los agregamos al elemento del DOM
+        todos.forEach(todo => {
+            element.append(createTodoHTML(todo));
+        });
+    }
+    ```
+
+
