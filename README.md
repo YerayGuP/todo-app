@@ -123,3 +123,68 @@
 
             }
         }
+
+## Matizando las funcionalidades de nuestro Store.
+En esta seccion hemos creado las funcionalidades que queremos hacer con nuestro store, pero no hemos implementado ninguna de ellas. Nos servira como una guia para saber que es lo que queremos hacer. Las funciones que implementaremos serán las siguientes:
+
+1. Esta funcion se encargara de guardar el store en el localstorage
+
+            const loadStore = () => {
+                throw new Error('Not implemented')
+            }
+
+
+2. Esta funcion implemetara la logica para agregar un nuevo todo
+
+            const addTodo = (todo) => {
+                throw new Error('Not implemented')
+            }
+
+
+3. Esta funcion se encargara de eliminar un todo
+
+
+            const deleteTodo = (id) => {
+                throw new Error('Not implemented')
+            }
+
+
+4. Esta funcion se encargara de eliminar todos los todos completados
+
+            const deleteCompleted = () => {
+                throw new Error('Not implemented')
+            }
+
+
+5. Esta funcion actualizara el estado de un todo
+
+            const toggleTodo = (id) => {
+                throw new Error('Not implemented')
+            }
+
+
+6. Esta funcion se encargara de actualizar el filtro:
+
+            const setFilter = (newFilter = Filter.all) => {
+                throw new Error('Not implemented')
+            }
+
+
+7. Esta funcion se encargara de obtener los todos, para no acceder directamente al state:
+
+        const getCurrentFilter = () => {
+            throw new Error('Not implemented')
+        }
+
+8. Finalmente las agregaremos a la funcion de exportacion por defecto:
+
+        export default {
+            addTodo,
+            deleteCompleted,
+            deleteTodo,
+            getCurrentFilter,
+            initStore,
+            loadStore,
+            setFilter,
+            toggleTodo,
+        }
