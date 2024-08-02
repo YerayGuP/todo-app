@@ -591,3 +591,33 @@ const initStore = () => {
 ```
 
 * Con esto, por fin hemos añadido la función `saveStateToLocalStorage` para guardar el estado en `localStorage` y la función `loadStore` para cargar el estado desde `localStorage` al inicializar la aplicación. 
+
+### Método todoCompleted:
+
+## Añadiendo la funcionalidad para borrar completados
+
+1. Añadimos una nueva entrada en el objeto `ElementId` para seleccionar el botón de borrado de completados.
+
+    ```javascript
+    const ElementId = {
+        TodoList: '.todo-list',
+        TodoInput: '#new-todo-input',
+        TodoCompleted: '.clear-completed',
+    }
+    ```
+
+2. Necesitamos asignar este nuevo identificador a una constante para poder trabajar con él. 
+
+    ```javascript
+    const todoCompleted = document.querySelector(ElementId.TodoCompleted);
+    ```
+
+3. Crearemos un listener para manejar el evento `click` en el botón de borrar completados. Este listener ejecutará una función que primero eliminará todos los todos completados del `todoStore` y luego volverá a renderizar la lista de todos actualizada:
+
+    ```javascript
+    todoCompleted.addEventListener('click', () => {
+        todoStore.deleteCompleted(); 
+        displayTodos(); 
+    });
+    ```
+

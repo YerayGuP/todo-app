@@ -6,6 +6,7 @@ import { Todo } from './models/todo.model';
 const ElementId = {
     TodoList: '.todo-list',
     TodoInput: '#new-todo-input',
+    TodoCompleted: '.clear-completed',
 }
 /**
  * Esta funcion se encarga de renderizar la aplicacion en el elemento con el id que se le pase
@@ -32,6 +33,7 @@ export const App = (elementId) => {
     // Referenciamos el input del formulario
     const newInputDescription = document.querySelector(ElementId.TodoInput);
     const todoListUL = document.querySelector(ElementId.TodoList);
+    const todoCompleted = document.querySelector(ElementId.TodoCompleted);
 
 
     // Listeners
@@ -57,6 +59,12 @@ export const App = (elementId) => {
         if ( !element || !isDestroyElement ) return; // Si no encontramos el elemento o no es el boton de eliminar, no hacemos nada
         todoStore.deleteTodo(element.getAttribute('data-id')); // Eliminamos el todo
         displayTodos(); // Volvemos a renderizar la lista
+    });
+
+    todoCompleted.addEventListener('click', () => {
+        todoStore.deleteCompleted(); // Eliminamos los todos completados
+        displayTodos(); // Volvemos a renderizar la lista
+
     });
 }
 
