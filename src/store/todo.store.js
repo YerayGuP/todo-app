@@ -22,7 +22,7 @@ const state = {
  * Lo que significa que se encargara de cargar los datos del localstorage
  */
 const initStore = () => {
-    console.log(state)
+    loadStore();
     console.log('InitStore')
 }
 
@@ -30,7 +30,16 @@ const initStore = () => {
  * Esta funcion se encargara de guardar el store en el localstorage
  */
 const loadStore = () => {
-    throw new Error('Not implemented')
+   if ( localStorage.getItem( 'state' ) ) {
+        const { todos = [], filter = Filter.all } = JSON.parse( localStorage.getItem( 'state' ) );
+        state.todos = todos;
+        state.filter = filter;
+   } return;
+}
+
+const saveStateToLocalStorage = () => {
+    // JSON.stringify(state): metodo que nos permite convertir un objeto a un string de un objeto JSON
+    localStorage.setItem('state', JSON.stringify(state));
 }
 
 /**
@@ -60,7 +69,7 @@ const getTodos = (filter = Filter.all) => {
 const addTodo = (description) => {
     if (!description) throw new Error('Description is required');
     state.todos.push(new Todo(description)); // Agregamos un nuevo todo al array de todos
-    
+    saveStateToLocalStorage()
 }
 
 /**
@@ -71,7 +80,7 @@ const deleteTodo = (id) => {
     state.todos = state.todos.filter( todo => todo.id !== id );
     // Filtramos los todos que no tengan el id que queremos eliminar y los guardamos en el array de todos
     // De esta forma eliminamos el todo con el id que pasamos como parametro en el array original
-
+    saveStateToLocalStorage()
 }
 
 /**
@@ -79,6 +88,7 @@ const deleteTodo = (id) => {
  */
 const deleteCompleted = () => {
     state.todos = state.todos.filter( todo => todo.done );
+    saveStateToLocalStorage()
 }
 
 /**
@@ -94,6 +104,8 @@ const toggleTodo = (id) => {
         }
         return todo;
     });
+
+    saveStateToLocalStorage()
 }
 
 /**
@@ -105,7 +117,7 @@ const setFilter = (newFilter = Filter.all) => {
         throw new Error(`Option ${newFilter} not valid`);
     }
     state.filter = newFilter;
-
+    saveStateToLocalStorage()
 }
 
 /**

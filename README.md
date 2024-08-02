@@ -543,3 +543,51 @@ todoListUL.addEventListener('click', (event) => {
     displayTodos();
 });
 ```
+
+## LocalStore - La persistencia de los datos.
+
+### Local Storage
+* El local storage es una característica del navegador web que permite almacenar datos de forma persistente en el dispositivo del usuario, utilizando un espacio de almacenamiento asignado por el navegador. A diferencia de las cookies, los datos guardados en el local storage no tienen una fecha de expiración predeterminada, lo que permite su acceso incluso después de cerrar y reabrir el navegador. Esto lo hace útil para aplicaciones web que requieren almacenar información localmente para su funcionamiento sin conexión o para mejorar la experiencia del usuario.
+
+### Session Storage
+* El session storage es una característica del navegador web que permite almacenar datos de forma temporal en el dispositivo del usuario, asociando dichos datos a una única sesión del navegador. Los datos en el session storage se mantienen disponibles mientras la pestaña o ventana del navegador esté abierta y se eliminan automáticamente al cerrar la pestaña o ventana.
+
+### ¿Qué diferencia hay entre ellos?
+* La principal diferencia entre session storage y local storage es la duración del almacenamiento: el session storage es temporal y se borra al finalizar la sesión del navegador, mientras que el local storage es persistente y retiene los datos hasta que se eliminen explícitamente, incluso después de cerrar y reabrir el navegador.
+
+### saveStateToLocalStorage:
+* Esta función se compone del objeto `localStorage`, encargado de manejar el almacenamiento local del navegador. Para implementar el guardado, accederemos a su método `setItem`, que permite guardar datos en el almacenamiento local. Este método requiere un nombre para la clave y un objeto JSON, convertido a una cadena de texto mediante `JSON.stringify`. Con esto, guardaremos el estado del objeto.
+
+```javascript
+const saveStateToLocalStorage = () => {
+    localStorage.setItem('state', JSON.stringify(state));
+}
+```
+
+* Esta función será llamada desde cada método que altere el objeto `todos`. Ejemplo: `addTodo`, `deleteTodos`, `deletedCompleted`, `toggleTodos`, etc.
+
+### loadStore:
+* Esta función nos permitirá verificar si existe un objeto `state`. De existir, haremos una desestructuración del objeto JSON y los relacionaremos con el array `todos` y el objeto `Filter`.
+
+```javascript
+const loadStore = () => {
+   if (localStorage.getItem('state')) {
+        const { todos = [], filter = Filter.all } = JSON.parse(localStorage.getItem('state'));
+        state.todos = todos;
+        state.filter = filter;
+   }
+   return;
+}
+```
+
+### Inicializándolo en el initStore:
+* Llamaremos a `loadStore` desde `initStore`.
+
+```javascript
+const initStore = () => {
+    loadStore();
+    console.log('InitStore');
+}
+```
+
+* Con esto, por fin hemos añadido la función `saveStateToLocalStorage` para guardar el estado en `localStorage` y la función `loadStore` para cargar el estado desde `localStorage` al inicializar la aplicación. 
