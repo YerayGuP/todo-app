@@ -34,8 +34,11 @@ const loadStore = () => {
 }
 
 /**
- * Esta funcion se encargara de obtener los todos
- * @param {*} filter 
+ * Condiconal switch que se encargara de retornar los todos segun el filtro que se le pase
+ * Usa el operador spread para retornar un nuevo array con los todos que cumplan con la condicion
+ * @param {Filter} filter.all => Retorna todos los todos
+ * @param {Filter} filter.completed => Retorna todos los todos completados
+ * @param {Filter} filter.pending => Retorna todos los todos pendientes 
  */
 const getTodos = (filter = Filter.all) => {
     switch (filter) {
@@ -106,7 +109,8 @@ const setFilter = (newFilter = Filter.all) => {
 }
 
 /**
- * Esta funcion se encargara de obtener los todos, para no acceder directamente al state
+ * Esta funcion se encargara de retornar el filtro actual
+ * @returns {Filter} Ejemplo: all, completed, pending
  */
 const getCurrentFilter = () => {
     return state.filter;

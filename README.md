@@ -301,3 +301,67 @@ const toggleTodo = (id) => {
     });
 }
 ```
+
+## Renderizando el todo
+
+* Primero, creamos en `app.js` una función llamada `displayTodos`, que contendrá una variable con el valor para llamar a los todos y mostrar los filtros. También contendrá la función `renderTodos`:
+
+    ```javascript
+    const displayTodos = () => {
+        const todos = todoStore.getTodos(todoStore.getCurrentFilter());
+        renderTodos(ElementId.TodoList, todos);
+    }
+    ```
+
+* La llamaremos desde la función autoinvocada:
+
+    ```javascript
+    (() => {
+        const app = document.createElement('div');
+        app.innerHTML = html;
+        document.querySelector(elementId).appendChild(app);
+        displayTodos();
+    })();
+    ```
+
+* Crearemos en el directorio `todos`, la carpeta `use-cases`, así como los archivos `create-todo-html.js`, `render-todo.js` e `index.js`.
+
+* En segundo lugar, montamos la función `renderTodos`. Esta función selecciona por ID un elemento HTML y lo almacena en una variable. Tras esto, crea un `forEach` que enviará cada elemento almacenado en el array `todos` como elemento HTML a través de la función `createTodoHTML`:
+
+    `render-todo.js`:
+
+    ```javascript
+    import { Todo } from '../models/todo.model';
+    import { createTodoHTML } from './create-todo-html';
+
+    export const renderTodos = (elementId, todos = []) => {
+        const element = document.querySelector(elementId);
+        todos.forEach(todo => {
+            element.append(createTodoHTML(todo));
+        });
+    }
+    ```
+
+* En tercer lugar, la función `createTodoHTML` validará si existe el todo y creará una constante HTML con el valor de un `h1` y su descripción. También creará el `li` en una constante y le añadiremos el valor del `h1` anterior. Esa constante `li` la retornaremos.
+
+    ```javascript
+    import { Todo } from '../models/todo.model';
+
+    export const createTodoHTML = (todo) => {
+        if (!todo) throw new Error('A TODO is required');
+        const html = `<h1>${todo.description}</h1>`;
+
+        const liElement = document.createElement('li');
+        liElement.innerHTML = html;
+        return liElement;
+    }
+    ```
+
+* Finalmente, en `index.js` exportaremos las funciones anteriores para usarse en `app.js`.
+
+    ```javascript
+    export { renderTodos } from './render-todo';
+    export { createTodoHTML } from './create-todo-html';
+    ```
+
+---
