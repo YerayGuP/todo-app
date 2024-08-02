@@ -125,7 +125,7 @@
         }
 
 ## Matizando las funcionalidades de nuestro Store.
-En esta seccion hemos creado las funcionalidades que queremos hacer con nuestro store, pero no hemos implementado ninguna de ellas. Nos servira como una guia para saber que es lo que queremos hacer. Las funciones que implementaremos serán las siguientes:
+* En esta seccion hemos creado las funcionalidades que queremos hacer con nuestro store, pero no hemos implementado ninguna de ellas. Nos servira como una guia para saber que es lo que queremos hacer. Las funciones que implementaremos serán las siguientes:
 
 1. Esta funcion se encargara de guardar el store en el localstorage
 
@@ -176,15 +176,128 @@ En esta seccion hemos creado las funcionalidades que queremos hacer con nuestro 
             throw new Error('Not implemented')
         }
 
-8. Finalmente las agregaremos a la funcion de exportacion por defecto:
+8. Esta funcion se encargara de obtener el todo
+
+        const getTodos = (filter) => {
+            throw new Error('Not implemented')
+        }
+
+9. Finalmente las agregaremos a la funcion de exportacion por defecto:
 
         export default {
             addTodo,
             deleteCompleted,
             deleteTodo,
             getCurrentFilter,
+            getTodos,
             initStore,
             loadStore,
             setFilter,
             toggleTodo,
         }
+
+## Implementando las funcionalidades:
+
+* Dado que tenemos un objeto `Filter` y un array `todos` en el objeto `state` definidos, construiremos los métodos en base a ellos. 
+
+```javascript
+const Filter = {
+    all: 'all',
+    completed: 'completed',
+    pending: 'pending',
+}
+
+const state = {
+    todos: [
+        new Todo('Piedra del alma'),
+        new Todo('Piedra del tiempo'),
+        new Todo('Piedra del espacio'),
+        new Todo('Piedra de la mente'),
+        new Todo('Piedra del poder'),
+    ],
+    filter: Filter.all,
+}
+```
+
+### 1. Método `getTodos`:
+* Para esta funcionalidad usaremos el condicional `switch` para que, según el tipo de filtro (`all`, `completed` o `pending`), realice una u otra opción. En cada caso, retornará una copia del `state` con los `todos` que coincidan. En el caso de `all`, retornamos ese array con un spread, lo cual no será necesario con `filter` en `completed` y `pending` ya que `filter` es un método inmutable que devuelve una copia del array modificada. La idea es no modificar los originales.
+
+```javascript
+const getTodos = (filter = Filter.all) => {
+    switch (filter) {
+        case Filter.all: 
+            return [...state.todos]; 
+        case Filter.completed: 
+            return state.todos.filter(todo => todo.done);
+        case Filter.pending: 
+            return state.todos.filter(todo => !todo.done);
+        default: 
+            throw new Error(`Option ${filter} not valid`);
+    }
+}
+```
+
+### 2. Método `addTodo`:
+* En esta funcionalidad solo requerimos una descripción. Una vez que la verificamos, la añadimos dentro del array `todos` mediante el método `push`.
+
+```javascript
+const addTodo = (description) => {
+    if (!description) throw new Error('Description is required');
+    state.todos.push(new Todo(description)); // Agregamos un nuevo todo al array de todos
+}
+```
+
+### 3. Método `deleteTodo`:
+* Este método recogerá un `id` y actualizará el array `state.todos` con todos los `todos` que no tengan el `id` especificado.
+
+```javascript
+const deleteTodo = (id) => {
+    state.todos = state.todos.filter(todo => todo.id !== id);
+}
+```
+
+### 4. Método `deleteCompleted`:
+* Similar al anterior, actualizaremos el array `state.todos` para eliminar todas las instancias que tengan `done` en `true`.
+
+```javascript
+const deleteCompleted = () => {
+    state.todos = state.todos.filter(todo => !todo.done);
+}
+```
+
+### 5. Método `setFilter`:
+* Esta función actualizará el filtro. Posee una validación para que solo admita `all`, `completed` o `pending` como filtros.
+
+```javascript
+const setFilter = (newFilter = Filter.all) => {
+    if (newFilter !== Filter.all && newFilter !== Filter.completed && newFilter !== Filter.pending) {
+        throw new Error(`Option ${newFilter} not valid`);
+    }
+    state.filter = newFilter;
+}
+```
+
+### 6. Método `getCurrentFilter`:
+* Esta función devolverá el filtro activo.
+
+```javascript
+const getCurrentFilter = () => {
+    return state.filter;
+}
+```
+
+### 7. Método `toggleTodo`:
+* Esta función nos permitirá cambiar el estado de `true` a `false`, y viceversa, de un `todo` específico.
+
+```javascript
+const toggleTodo = (id) => {
+    if (!id) throw new Error('Id is required');
+
+    state.todos = state.todos.map(todo => {
+        if (todo.id === id) {
+            todo.done = !todo.done;
+        }
+        return todo;
+    });
+}
+```
