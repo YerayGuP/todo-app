@@ -13,7 +13,8 @@ src/
     ├── use-cases/
     │   ├── create-todo-html.js
     │   ├── render-todo.js
-    │   └── render-pending.js
+    │   ├── render-pending.js
+    │   └── index.js
     └── app.html
     └── app.js
 ```
