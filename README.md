@@ -3,6 +3,7 @@
 ## Estructurando el todo-list:
 
 * Estructura de directorios:
+        ```plaintext
         src/
         ├── store/
         │   └── todo.store.js
@@ -15,6 +16,8 @@
             │   └── render-pending.js
             └── app.html
             └── app.js
+        ```
+
 
 
 1. En nuestro documento html debemos vicular ```main.js``` e ```index.html```.
