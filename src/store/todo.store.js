@@ -1,6 +1,6 @@
 import { Todo } from '../todos/models/todo.model';
 
-const Filter = {
+export const Filter = {
     all: 'all',
     completed: 'completed',
     pending: 'pending',
@@ -87,7 +87,7 @@ const deleteTodo = (id) => {
  * Esta funcion se encargara de eliminar todos los todos completados
  */
 const deleteCompleted = () => {
-    state.todos = state.todos.filter( todo => todo.done );
+    state.todos = state.todos.filter( todo => !todo.done );
     saveStateToLocalStorage()
 }
 

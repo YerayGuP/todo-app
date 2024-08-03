@@ -1,5 +1,5 @@
 import html from './app.html?raw';
-import todoStore from '../store/todo.store';
+import todoStore, { Filter } from '../store/todo.store';
 import { renderTodos } from './use-cases';
 import { Todo } from './models/todo.model';
 
@@ -7,6 +7,7 @@ const ElementId = {
     TodoList: '.todo-list',
     TodoInput: '#new-todo-input',
     TodoCompleted: '.clear-completed',
+    TodoFilter: '.filtro',
 }
 /**
  * Esta funcion se encarga de renderizar la aplicacion en el elemento con el id que se le pase
@@ -34,7 +35,7 @@ export const App = (elementId) => {
     const newInputDescription = document.querySelector(ElementId.TodoInput);
     const todoListUL = document.querySelector(ElementId.TodoList);
     const todoCompleted = document.querySelector(ElementId.TodoCompleted);
-
+    const filtersUL = document.querySelectorAll(ElementId.TodoFilter);
 
     // Listeners
     newInputDescription.addEventListener('keyup', (event) => {
@@ -61,11 +62,34 @@ export const App = (elementId) => {
         displayTodos(); // Volvemos a renderizar la lista
     });
 
-    todoCompleted.addEventListener('click', () => {
+    todoCompleted.addEventListener('click', (event) => {
+        const isCompleteElement = event.target.className === 'clear-completed'; 
+        if ( !isCompleteElement ) return; 
         todoStore.deleteCompleted(); // Eliminamos los todos completados
         displayTodos(); // Volvemos a renderizar la lista
-
     });
+
+   
+    filtersUL.forEach( element => {
+        element.addEventListener('click', (element) => {
+            filtersUL.forEach( el => el.classList.remove('selected') );
+            element.target.classList.add('selected');
+            
+            switch (element.target.textContent) {
+                case 'Todos': 
+                    todoStore.setFilter(Filter.all);
+                    break;
+                case 'Pendientes':
+                    todoStore.setFilter(Filter.pending);
+                    break;
+                case 'Completados':
+                    todoStore.setFilter(Filter.completed);
+                    break;
+                }
+
+            displayTodos();
+     });
+    })
 }
 
 //podemos importar mediante js un documento html y renderizarlo en el DOM con la funcion App

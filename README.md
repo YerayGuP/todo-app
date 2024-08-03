@@ -594,8 +594,6 @@ const initStore = () => {
 
 ### Método todoCompleted:
 
-## Añadiendo la funcionalidad para borrar completados
-
 1. Añadimos una nueva entrada en el objeto `ElementId` para seleccionar el botón de borrado de completados.
 
     ```javascript
@@ -621,3 +619,50 @@ const initStore = () => {
     });
     ```
 
+### Método setFilter:
+
+1. Primero, actualizamos el objeto `ElementId` para incluir la clase de los botones del filtro HTML. Esto nos permitirá seleccionar estos botones fácilmente:
+
+    ```javascript
+    const ElementId = {
+        TodoList: '.todo-list',
+        TodoInput: '#new-todo-input',
+        TodoCompleted: '.clear-completed',
+        TodoFilter: '.filtro',
+    }
+    ```
+
+2. Luego, seleccionamos todos los botones del filtro, creando un arreglo con ellos. Usamos `document.querySelectorAll` para esto:
+
+    ```javascript
+    const filtersUL = document.querySelectorAll(ElementId.TodoFilter);
+    ```
+
+3. Recorremos el arreglo de botones con `forEach`, y le damos a cada botón un listener. Dentro del listener, creamos otro `forEach` que eliminará la clase `selected` del botón anteriormente seleccionado y la aplicará al botón actual. Para aplicar los filtros, nos basaremos en el texto del botón. Recogemos este texto con `element.target.textContent` y lo usamos en una condicional `switch` para determinar cuál filtro aplicar. Finalmente, actualizamos la visualización llamando a `displayTodos()`:
+
+    ```javascript
+    filtersUL.forEach(element => {
+        element.addEventListener('click', (event) => {
+            // Eliminamos la clase 'selected' de todos los botones
+            filtersUL.forEach(el => el.classList.remove('selected'));
+            // Añadimos la clase 'selected' al botón actual
+            event.target.classList.add('selected');
+            
+            // Aplicamos el filtro según el texto del botón
+            switch (event.target.textContent) {
+                case 'Todos': 
+                    todoStore.setFilter(Filter.all);
+                    break;
+                case 'Pendientes':
+                    todoStore.setFilter(Filter.pending);
+                    break;
+                case 'Completados':
+                    todoStore.setFilter(Filter.completed);
+                    break;
+            }
+
+            // Actualizamos la visualización de los todos
+            displayTodos();
+        });
+    });
+    ```
