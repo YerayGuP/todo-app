@@ -1,6 +1,6 @@
 import html from './app.html?raw';
 import todoStore, { Filter } from '../store/todo.store';
-import { renderTodos } from './use-cases';
+import { renderTodos, renderPending } from './use-cases';
 import { Todo } from './models/todo.model';
 
 const ElementId = {
@@ -8,22 +8,26 @@ const ElementId = {
     TodoInput: '#new-todo-input',
     TodoCompleted: '.clear-completed',
     TodoFilter: '.filtro',
+    PendingCountLabel: '#pending-count',
 }
+
 /**
- * Esta funcion se encarga de renderizar la aplicacion en el elemento con el id que se le pase
- * @param {string} elementId 
+ * Inicializa y renderiza la aplicación en el elemento especificado.
+ * @param {string} elementId - El ID del elemento en el que se renderizará la aplicación.
  */
 export const App = (elementId) => {
-
 
     const displayTodos = () => {
         const todos = todoStore.getTodos(todoStore.getCurrentFilter());
         renderTodos(ElementId.TodoList, todos);
+        updatePendingCount();
     }
 
+    const updatePendingCount = () => {
+        renderPending(ElementId.PendingCountLabel);
+    }
 
-    //esta funcion se ejecuta inmediatamente despues de ser definida y se encarga de renderizar la aplicacion
-    //en el elemento con el id que se le pase. Esto se llama una funcion autoejecutable
+    // Inicializa la aplicación
     (() => {
         const app = document.createElement('div');
         app.innerHTML = html;
@@ -31,52 +35,51 @@ export const App = (elementId) => {
         displayTodos();
     })();
 
-    // Referenciamos el input del formulario
+    // Referencias a los elementos del DOM
     const newInputDescription = document.querySelector(ElementId.TodoInput);
     const todoListUL = document.querySelector(ElementId.TodoList);
     const todoCompleted = document.querySelector(ElementId.TodoCompleted);
     const filtersUL = document.querySelectorAll(ElementId.TodoFilter);
 
-    // Listeners
+    // Event listeners
     newInputDescription.addEventListener('keyup', (event) => {
-        if ( event.keyCode !== 13 ) return; // Si la tecla presionada no es enter, no hacemos nada
-        if ( event.target.value.trim() === '' ) return; // Si el valor del input esta vacio, no hacemos nada
-
+        if (event.keyCode !== 13 || event.target.value.trim() === '') return;
         todoStore.addTodo(event.target.value);
         displayTodos();
         event.target.value = '';
-
     });
 
     todoListUL.addEventListener('click', (event) => {
-        const element = event.target.closest('[data-id]'); // Buscamos el elemento mas cercano que tenga el atributo data-id
-        todoStore.toggleTodo(element.getAttribute('data-id')); // Cambiamos el estado del todo
-        displayTodos(); // Volvemos a renderizar la lista
+        const element = event.target.closest('[data-id]');
+        if (element) {
+            todoStore.toggleTodo(element.getAttribute('data-id'));
+            displayTodos();
+        }
     });
 
     todoListUL.addEventListener('click', (event) => {
-        const isDestroyElement = event.target.className === 'destroy'; // Verificamos si el elemento clickeado es el boton de eliminar
-        const element = event.target.closest('[data-id]'); // Buscamos el elemento mas cercano que tenga el atributo data-id
-        if ( !element || !isDestroyElement ) return; // Si no encontramos el elemento o no es el boton de eliminar, no hacemos nada
-        todoStore.deleteTodo(element.getAttribute('data-id')); // Eliminamos el todo
-        displayTodos(); // Volvemos a renderizar la lista
+        const isDestroyElement = event.target.className === 'destroy';
+        const element = event.target.closest('[data-id]');
+        if (isDestroyElement && element) {
+            todoStore.deleteTodo(element.getAttribute('data-id'));
+            displayTodos();
+        }
     });
 
     todoCompleted.addEventListener('click', (event) => {
-        const isCompleteElement = event.target.className === 'clear-completed'; 
-        if ( !isCompleteElement ) return; 
-        todoStore.deleteCompleted(); // Eliminamos los todos completados
-        displayTodos(); // Volvemos a renderizar la lista
+        if (event.target.className === 'clear-completed') {
+            todoStore.deleteCompleted();
+            displayTodos();
+        }
     });
 
-   
-    filtersUL.forEach( element => {
-        element.addEventListener('click', (element) => {
-            filtersUL.forEach( el => el.classList.remove('selected') );
-            element.target.classList.add('selected');
+    filtersUL.forEach(el => {
+        el.addEventListener('click', (event) => {
+            filtersUL.forEach(filter => filter.classList.remove('selected'));
+            event.target.classList.add('selected');
             
-            switch (element.target.textContent) {
-                case 'Todos': 
+            switch (event.target.textContent) {
+                case 'Todos':
                     todoStore.setFilter(Filter.all);
                     break;
                 case 'Pendientes':
@@ -85,11 +88,9 @@ export const App = (elementId) => {
                 case 'Completados':
                     todoStore.setFilter(Filter.completed);
                     break;
-                }
+            }
 
             displayTodos();
-     });
-    })
+        });
+    });
 }
-
-//podemos importar mediante js un documento html y renderizarlo en el DOM con la funcion App

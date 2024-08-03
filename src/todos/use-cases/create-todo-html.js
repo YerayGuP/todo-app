@@ -1,20 +1,21 @@
 import { Todo } from '../models/todo.model';
 
 /**
- * 
- * @param {Todo} todo 
+ * Crea un elemento HTML para un todo.
+ * @param {Todo} todo - El todo para el cual se creará el elemento HTML.
+ * @returns {HTMLElement} El elemento `li` representando el todo.
  */
 export const createTodoHTML = (todo) => {
-    if (!todo ) throw new Error('A TODO is required');
+    if (!todo) throw new Error('A TODO is required');
+    
     const html = `
-                    <div class="view">
-                        <input class="toggle" type="checkbox" ${ todo.done ? 'checked' : ''}>
-                        <label>${todo.description}</label>
-                        <button class="destroy"></button>
-                    </div>
-
-                    <input class="edit" value="Create a TodoMVC template">`
-                ;
+        <div class="view">
+            <input class="toggle" type="checkbox" ${todo.done ? 'checked' : ''}>
+            <label>${todo.description}</label>
+            <button class="destroy"></button>
+        </div>
+        <input class="edit" value="Create a TodoMVC template">
+    `;
 
     const liElement = document.createElement('li');
     liElement.innerHTML = html;

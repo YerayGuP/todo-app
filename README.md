@@ -592,7 +592,7 @@ const initStore = () => {
 
 * Con esto, por fin hemos añadido la función `saveStateToLocalStorage` para guardar el estado en `localStorage` y la función `loadStore` para cargar el estado desde `localStorage` al inicializar la aplicación. 
 
-### Método todoCompleted:
+## Método todoCompleted:
 
 1. Añadimos una nueva entrada en el objeto `ElementId` para seleccionar el botón de borrado de completados.
 
@@ -619,7 +619,7 @@ const initStore = () => {
     });
     ```
 
-### Método setFilter:
+## Método setFilter:
 
 1. Primero, actualizamos el objeto `ElementId` para incluir la clase de los botones del filtro HTML. Esto nos permitirá seleccionar estos botones fácilmente:
 
@@ -665,4 +665,57 @@ const initStore = () => {
             displayTodos();
         });
     });
+    ```
+
+## Método para contar pendientes:
+
+1. Primero, actualizamos el objeto `ElementId` para incluir el id del contador de pendientes. Esto nos permitirá seleccionar el elemento que mostrará el número de todos pendientes:
+
+    ```javascript
+    const ElementId = {
+        TodoList: '.todo-list',
+        TodoInput: '#new-todo-input',
+        TodoCompleted: '.clear-completed',
+        TodoFilter: '.filtro',
+        PendingCountLabel: '#pending-count',
+    }
+    ```
+
+2. Creamos un nuevo archivo en el directorio `use-cases` llamado `render-pending.js`. En este archivo, definimos una función que se encargará de actualizar el contador de todos pendientes. La función realizará lo siguiente:
+   - Realiza una referencia al elemento del DOM usando el id proporcionado.
+   - Actualiza el contenido del elemento con el número de todos pendientes, obtenido mediante `todoStore.getTodos(Filter.pending).length`.
+
+    ```javascript
+    import todoStore, { Filter } from "../../store/todo.store";
+
+    let element;
+
+    /**
+     * Renderiza el número de todos pendientes en el elemento especificado.
+     * @param {string} elementId - El ID del elemento en el que se renderizará el número de todos pendientes.
+     */
+    export const renderPending = (elementId) => {
+        if (!element) element = document.querySelector(elementId);
+        if (!element) throw new Error('Element not found');
+
+        element.innerHTML = todoStore.getTodos(Filter.pending).length;
+    }
+    ```
+
+3. En `app.js`, creamos una nueva función llamada `updatePendingCount` que llamará a `renderPending`, pasando el id del contador como argumento:
+
+    ```javascript
+    const updatePendingCount = () => {
+        renderPending(ElementId.PendingCountLabel);
+    }
+    ```
+
+4. Finalmente, incorporamos la llamada a `updatePendingCount` dentro de la función `displayTodos` para asegurarnos de que el contador se actualice cada vez que se renderiza la lista de todos:
+
+    ```javascript
+    const displayTodos = () => {
+        const todos = todoStore.getTodos(todoStore.getCurrentFilter());
+        renderTodos(ElementId.TodoList, todos);
+        updatePendingCount();
+    }
     ```

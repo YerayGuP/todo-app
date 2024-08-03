@@ -1,25 +1,20 @@
 import { Todo } from '../models/todo.model';
 import { createTodoHTML } from './create-todo-html';
 
+let element;
 
-let element; // Variable que almacenara el elemento del DOM
 /**
- * 
- * @param {HTMLElement} elementId 
- * @param {Todo} todos 
+ * Renderiza una lista de todos en el elemento especificado.
+ * @param {string} elementId - El ID del elemento en el que se renderizarán los todos.
+ * @param {Todo[]} todos - La lista de todos a renderizar.
  */
-export const renderTodos = ( elementId, todos = [] ) => {
-    // Si no se ha pasado un elemento por parametro, intentamos obtenerlo del DOM
-    if ( !element ) element = document.querySelector( elementId );
-    
-    // Si no se encuentra el elemento, lanzamos un error
-    if ( !element ) throw new Error(`Element with id ${ elementId } not found`);
+export const renderTodos = (elementId, todos = []) => {
+    if (!element) element = document.querySelector(elementId);
+    if (!element) throw new Error(`Element with id ${elementId} not found`);
 
-    // Limpiamos el contenido del elemento
     element.innerHTML = '';
 
-    // Iteramos sobre los todos y los agregamos al elemento del DOM
-    todos.forEach( todo => {
+    todos.forEach(todo => {
         element.append(createTodoHTML(todo));
-    })
+    });
 }
