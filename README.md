@@ -3,22 +3,20 @@
 ## Estructurando el todo-list:
 
 * Estructura de directorios:
-        ```plaintext
-        src/
-        ├── store/
-        │   └── todo.store.js
-        └── todos/
-            ├── models/
-            │   └── todo.model.js
-            ├── use-cases/
-            │   ├── create-todo-html.js
-            │   ├── render-todo.js
-            │   └── render-pending.js
-            └── app.html
-            └── app.js
-        ```
-
-
+```plaintext
+src/
+├── store/
+│   └── todo.store.js
+└── todos/
+    ├── models/
+    │   └── todo.model.js
+    ├── use-cases/
+    │   ├── create-todo-html.js
+    │   ├── render-todo.js
+    │   └── render-pending.js
+    └── app.html
+    └── app.js
+```
 
 1. En nuestro documento html debemos vicular ```main.js``` e ```index.html```.
     index.html:
