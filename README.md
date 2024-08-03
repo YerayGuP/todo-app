@@ -719,3 +719,6 @@ const initStore = () => {
         updatePendingCount();
     }
     ```
+
+# Desplegando el Todo-List:
+* https://ygp-todo-app.netlify.app/
